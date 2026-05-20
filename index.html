@@ -11,9 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
 <title>Memory Blocks</title>
-
 <style>
 
 :root{
@@ -293,6 +291,36 @@ body{
     background:#000;
     color:#00ff66;
 }
+
+@media (max-width:480px){
+
+    .board{
+        gap:6px;
+    }
+
+    .back{
+        font-size:22px;
+    }
+
+    .game-area{
+        padding:10px;
+    }
+
+    .menu{
+        padding:6px;
+    }
+
+    .menu-btn{
+        min-width:auto;
+        padding:6px 10px;
+        font-size:12px;
+    }
+
+    .status{
+        font-size:12px;
+        gap:10px;
+    }
+}
 </style>
 </head>
 <body>
@@ -445,8 +473,20 @@ function shuffle(array){
 }
 
 function updateGrid(){
-    board.style.gridTemplateColumns = "repeat(6, 62px)";
-    document.documentElement.style.setProperty("--card-size","62px");
+
+    let size = 62;
+
+    if(window.innerWidth <= 480){
+        size = 42;
+    }else if(window.innerWidth <= 768){
+        size = 52;
+    }
+
+    document.documentElement
+        .style.setProperty("--card-size", `${size}px`);
+
+    board.style.gridTemplateColumns =
+        `repeat(6, ${size}px)`;
 }
 
 /* ===== DEFINIR DIFICULDADE ===== */
@@ -721,7 +761,7 @@ function showRanking(){
     `).join("");
 }
 
-    window.addEventListener("resize", fixViewport);
+window.addEventListener("resize", fixViewport);
 window.addEventListener("orientationchange", fixViewport);
 fixViewport();
 
@@ -741,3 +781,5 @@ fixViewport();
 
 </body>
 </html>
+
+    
