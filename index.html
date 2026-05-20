@@ -12,6 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Memory Blocks</title>
+
 <style>
 
 :root{
@@ -295,11 +296,11 @@ body{
 @media (max-width:480px){
 
     .board{
-        gap:6px;
+        gap:8px;
     }
 
     .back{
-        font-size:22px;
+        font-size:26px;
     }
 
     .game-area{
@@ -477,9 +478,9 @@ function updateGrid(){
     let size = 62;
 
     if(window.innerWidth <= 480){
-        size = 42;
+        size = 48;
     }else if(window.innerWidth <= 768){
-        size = 52;
+        size = 56;
     }
 
     document.documentElement
@@ -781,5 +782,3 @@ fixViewport();
 
 </body>
 </html>
-
-    
