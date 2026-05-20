@@ -71,6 +71,23 @@ body{
     border:2px solid #fff;
     border-right-color:#000;
     border-bottom-color:#000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:11px;
+    font-weight:bold;
+    color:#000;
+    cursor:pointer;
+    font-family:Tahoma,sans-serif;
+}
+
+.win-btn:active{
+    border:2px solid #000;
+    border-right-color:#fff;
+    border-bottom-color:#fff;
+    transform:translate(1px,1px);
 }
 
 .menu{
@@ -152,18 +169,41 @@ body{
     cursor:pointer;
     user-select:none;
     -webkit-tap-highlight-color:transparent;
+    perspective:1000px;
 }
 
 .card:active{
     transform:scale(.95);
 }
 
+.card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.4,.2,.2,1);
+}
 
-/* FACE DA FRENTE */
-.front{
+/* animação ao virar */
+.card.open .card-inner{
+    transform:rotateY(180deg);
+}
+
+/* frente e verso */
+.front,
+.back{
     width:100%;
     height:100%;
     position:absolute;
+    top:0;
+    left:0;
+    backface-visibility:hidden;
+    border-radius:4px;
+}
+
+/* ===== FRENTE ===== */
+
+.front{
     z-index:2;
     background:#fff200;
     border:1px solid #7a6d00;
@@ -197,26 +237,16 @@ body{
     transform:skewX(-45deg);
 }
 
-/* VERSO */
+/* ===== VERSO ===== */
 
 .back{
-    width:100%;
-    height:100%;
     background:#efefef;
     border:2px solid #808080;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:34px;
-    position:absolute;
-}
-
-.card.open .front{
-    display:none;
-}
-
-.card.matched{
-    pointer-events:none;
+    transform:rotateY(180deg);
 }
 
 .status{
@@ -329,19 +359,13 @@ body{
 <div class="window">
     <div class="titlebar">
         Memory Blocks Game
-        <div class="win-btn"></div>
+        <div class="win-btn" id="aboutBtn">?</div>
     </div>
     <div class="menu">
     <div class="menu-left">
-        <button class="menu-btn" id="restart">
-            🔄 Recomeçar
-        </button>
-<button class="menu-btn" id="recordsBtn">
-    🏆 Recordes
-</button>
-        <button class="menu-btn" id="about">
-            ℹ️ Sobre
-        </button>
+        <button class="menu-btn" id="restart">🔄 Recomeçar </button>
+		<button class="menu-btn" id="recordsBtn">🏆 Recordes &nbsp</button>
+		<button class="menu-btn" id="pauseBtn">&nbsp&nbsp&nbsp ⏸️ Pause &nbsp&nbsp&nbsp</button>
     </div>
 </div>
 
@@ -460,6 +484,8 @@ let timerStarted = false;
 let startTime = null;
 let elapsed = 0;
 let timer;
+let paused = false;
+let pausedTime = 0;
 
 let currentIcons = [];
 
@@ -504,30 +530,46 @@ function createBoard(){
 
     board.innerHTML = "";
     updateGrid();
+
     const totalCards = 36;
+
     currentIcons = generateIcons(totalCards);
 
     currentIcons.forEach(icon => {
+
         const card = document.createElement("div");
+
         card.className = "card";
+
         card.dataset.icon = icon;
+
         card.innerHTML = `
-            <div class="front"></div>
-            <div class="back">${icon}</div>
+            <div class="card-inner">
+
+                <div class="front"></div>
+
+                <div class="back">${icon}</div>
+
+            </div>
         `;
 
         card.addEventListener("click", flipCard);
+
         board.appendChild(card);
     });
 }
 
 /* ===== TIMER ===== */
 function startTimer(){
-    startTime = performance.now();
-timerStarted = true;
+
+    startTime = performance.now() - pausedTime;
+
+    timerStarted = true;
+
     timer = setInterval(() => {
 
         const now = performance.now();
+
         elapsed = now - startTime;
 
         timeEl.textContent = (elapsed / 1000).toFixed(3);
@@ -584,6 +626,7 @@ function formatRecord(value){
 /* ===== VIRAR CARTA ===== */
 
 function flipCard(){
+	if(paused) return;
 
     if(lockBoard) return;
 
@@ -684,6 +727,14 @@ function restartGame(){
     movesEl.textContent = 0;
     timeEl.textContent = 0;
     createBoard();
+	
+	paused = false;
+pausedTime = 0;
+
+document.getElementById("pauseBtn").textContent =
+    "⏸️ Pause";
+
+board.style.opacity = "1";
 }
 
 /* ===== EVENTOS ===== */
@@ -706,7 +757,7 @@ document
 createBoard();
 
 
-document.getElementById("about")
+document.getElementById("aboutBtn")
 .addEventListener("click", () => {
 
     document.getElementById("aboutModal").style.display = "flex";
@@ -761,6 +812,41 @@ function showRanking(){
         </div>
     `).join("");
 }
+
+function togglePause(){
+
+    if(paused){
+
+        paused = false;
+
+        lockBoard = false;
+
+        startTimer();
+
+        document.getElementById("pauseBtn").textContent =
+            "⏸️ Pause";
+
+        board.style.opacity = "1";
+
+        return;
+    }
+
+    paused = true;
+
+    clearInterval(timer);
+
+    pausedTime = elapsed;
+
+    lockBoard = true;
+
+    document.getElementById("pauseBtn").textContent =
+        "▶️ Continuar";
+
+    board.style.opacity = ".4";
+}
+
+document.getElementById("pauseBtn")
+.addEventListener("click", togglePause);
 
 window.addEventListener("resize", fixViewport);
 window.addEventListener("orientationchange", fixViewport);
