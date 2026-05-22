@@ -605,6 +605,18 @@ function saveRanking(time, moves){
     localStorage.setItem(key, JSON.stringify(ranking));
 }
 
+	 /* =========== VIBRAÇÃO =========== */
+
+function vibrar(tempo = 40) {
+
+  // alguns navegadores precisam disso
+  if (!("vibrate" in navigator)) {
+    return;
+  }
+
+  navigator.vibrate(tempo);
+}
+
 /* ========== Mostrar recordes ========== */
 function showRecords(){
 
@@ -669,7 +681,7 @@ function checkMatch(){
         secondCard.classList.add("matched");
 
         resetTurn();
-
+		vibrar([80, 40, 120]);
         checkVictory();
 
     }else{
@@ -699,7 +711,9 @@ function checkVictory(){
     const matched = document.querySelectorAll(".matched");
 
     if(matched.length === currentIcons.length){
-
+		
+		/* vibrar se vitoria */
+        vibrar([200, 100, 200, 100, 300]);
         clearInterval(timer);
 
        saveRanking(elapsed, moves);
