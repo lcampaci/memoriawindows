@@ -706,22 +706,30 @@ function resetTurn(){
 
 /* ===== VITÓRIA ===== */
 
+/* ===== VITÓRIA ===== */
+
 function checkVictory(){
 
     const matched = document.querySelectorAll(".matched");
 
     if(matched.length === currentIcons.length){
-		
-		/* vibrar se vitoria */
+
+        // vibração primeiro
         vibrar([200, 100, 200, 100, 300]);
+
         clearInterval(timer);
 
-       saveRanking(elapsed, moves);
-
+        // mostra dados na modal
         finalTime.textContent = (elapsed / 1000).toFixed(3);
         finalMoves.textContent = moves;
 
+        // mostra mensagem de vitória primeiro
         modal.style.display = "flex";
+
+        // depois pede o nome
+        setTimeout(() => {
+            saveRanking(elapsed, moves);
+        }, 500);
     }
 }
 
