@@ -825,25 +825,33 @@ function showRanking(){
         return;
     }
 
-    container.innerHTML = ranking.map((r, i) => `
+   container.innerHTML = ranking.map((r, i) => `
+<div style="
+    border-bottom:1px solid #000;
+    padding:4px;
+    font-family:monospace;
+    font-size:12px;
+">
+
     <div style="
         display:flex;
         justify-content:space-between;
-        align-items:center;
-        border-bottom:1px solid #000;
-        padding:4px;
-        font-family:monospace;
-        font-size:12px;
-        gap:8px;
-        white-space:nowrap;
     ">
-
         <span>#${i+1} ${r.name}</span>
         <span>⏱ ${(r.time/1000).toFixed(3)}s</span>
-        <span>🎮 ${r.moves}</span>
-        <span>📅 ${r.date}</span>
-
     </div>
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        font-size:11px;
+        opacity:.9;
+    ">
+        <span>🎮 ${r.moves} moves</span>
+        <span>${r.date}</span>
+    </div>
+
+</div>
 `).join("");
 }
 
