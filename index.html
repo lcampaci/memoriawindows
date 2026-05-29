@@ -272,10 +272,16 @@ body{
 }
 
 .modal-box{
-    width:320px;
+    width:95%;
+    max-width:320px;
     background:#c0c0c0;
     border:2px solid #000;
     box-shadow:4px 4px 0 #000;
+}
+
+#rankingList{
+    max-height:300px;
+    overflow-y:auto;
 }
 
 .modal-title{
@@ -351,6 +357,19 @@ body{
         font-size:12px;
         gap:10px;
     }
+	#rankingList{
+    max-height:220px;
+    overflow-y:auto;
+}
+
+.arcade{
+    width:95%;
+}
+
+.arcade .modal-content{
+    padding:10px;
+    font-size:11px;
+}
 }
 </style>
 </head>
@@ -607,7 +626,7 @@ function startTimer(){
         name: name || "Anônimo",
         time,
         moves,
-        date: new Date().toLocaleString("pt-BR")
+		date: new Date().toLocaleDateString("pt-BR")
     };
 
     ranking.push(entry);
