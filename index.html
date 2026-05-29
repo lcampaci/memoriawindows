@@ -854,6 +854,24 @@ function showRanking(){
     </div>
 `).join("");
 }
+
+	document.getElementById("saveWinner")
+.addEventListener("click", () => {
+
+    const nome =
+        document.getElementById("winnerName").value.trim();
+
+    saveRanking(
+        nome,
+        elapsed,
+        moves
+    );
+
+    modal.style.display = "none";
+
+    restartGame();
+});
+	
 function togglePause(){
 
     if(paused){
@@ -894,22 +912,7 @@ window.addEventListener("orientationchange", fixViewport);
 fixViewport();
 
 
-	document.getElementById("saveWinner")
-.addEventListener("click", () => {
-
-    const nome =
-        document.getElementById("winnerName").value.trim();
-
-    saveRanking(
-        nome,
-        elapsed,
-        moves
-    );
-
-    modal.style.display = "none";
-
-    restartGame();
-});
+	
 
 
     if ("serviceWorker" in navigator) {
