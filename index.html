@@ -198,7 +198,7 @@ body{
     top:0;
     left:0;
     backface-visibility:hidden;
-    border-radius:4px;
+    border-radius:0;
 }
 
 /* ===== FRENTE ===== */
@@ -208,6 +208,7 @@ body{
     background:#fff200;
     border:1px solid #7a6d00;
     box-sizing:border-box;
+	
 }
 
 /* lateral esquerda */
@@ -221,6 +222,8 @@ body{
     background:#d4be00;
     border-left:1px solid #7a6d00;
     border-bottom:1px solid #7a6d00;
+	border-radius:0;
+	border-top:1px solid #7a6d00; /* 👈 fecha a quina */
 }
 
 /* base inferior */
@@ -234,6 +237,7 @@ body{
     background:#c2aa00;
     border-left:1px solid #7a6d00;
     border-bottom:1px solid #7a6d00;
+	border-radius:0;
     transform:skewX(-45deg);
 }
 
@@ -327,6 +331,14 @@ body{
 .arcade .modal-content{
     background:#000;
     color:#00ff66;
+}
+
+.card-inner{
+    border-radius:0;
+}
+
+.card{
+    border-radius:0;
 }
 
 @media (max-width:480px){
