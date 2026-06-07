@@ -1,862 +1,947 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="./icon-192.png">
-  <meta name="author" content="Luis Henrique Campaci">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#7f7f7f">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Memory Blocks</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./icon-192.png">
+    <meta name="author" content="Luis Henrique Campaci">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7f7f7f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Memory Blocks</title>
 
-<style>
+    <style>
+        :root {
+            --card-size: 62px;
+        }
 
-:root{
-    --card-size:62px;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+        }
 
-body{
-    background:#7f7f7f;
-    font-family:Tahoma,sans-serif;
-    overflow:auto;
-    padding:10px;
-}
+        body {
+            background: #7f7f7f;
+            margin: 0;
+            padding: 0;
+        }
 
-.window{
-    width:1100px;
-    max-width:98%;
-    margin:auto;
-    border:2px solid #000;
-    background:#c0c0c0;
-    box-shadow:4px 4px 0 #000;
-}
+        .window {
+            width: 100%;
+            min-height: 100vh;
+            border: 2px solid #000;
+            background: #c0c0c0;
+            box-shadow: none;
+            margin: 0;
 
-.window{
-    position:relative;
-    z-index:1;
-}
+            position: relative;
+            z-index: 1;
 
-.modal{
-    z-index:9999;
-}
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-.titlebar{
-    height:28px;
-    background:#0000aa;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    position:relative;
-}
+        .game-area {
+            background: #00e7ef;
+            padding: 18px;
 
-.win-btn{
-    position:absolute;
-    right:4px;
-    top:4px;
-    width:18px;
-    height:18px;
-    background:#c0c0c0;
-    border:2px solid #fff;
-    border-right-color:#000;
-    border-bottom-color:#000;
+            display: flex;
+            justify-content: center;
+            /* horizontal */
+            align-items: center;
+            /* vertical */
+        }
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+        .modal {
+            z-index: 9999;
+        }
 
-    font-size:11px;
-    font-weight:bold;
-    color:#000;
-    cursor:pointer;
-    font-family:Tahoma,sans-serif;
-}
+        .titlebar {
+            height: 28px;
+            background: #0000aa;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
 
-.win-btn:active{
-    border:2px solid #000;
-    border-right-color:#fff;
-    border-bottom-color:#fff;
-    transform:translate(1px,1px);
-}
+        .win-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
 
-.menu{
-    background:#dcdcdc;
-    border-bottom:2px solid #808080;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 12px;
-    flex-wrap:wrap;
-    gap:12px;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-/* grupo esquerda */
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            font-family: Tahoma, sans-serif;
+        }
 
-.menu-left{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+        .win-btn:active {
+            border: 2px solid #000;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            transform: translate(1px, 1px);
+        }
 
-/* botões */
+        .menu {
+            background: #dcdcdc;
+            border-bottom: 2px solid #808080;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-.menu-btn{
-    background:#c0c0c0;
-    border:2px solid #fff;
-    border-right-color:#000;
-    border-bottom-color:#000;
-    padding:6px 14px;
-    font-family:Tahoma,sans-serif;
-    font-size:14px;
-    cursor:pointer;
-    min-width:110px;
-    text-align:center;
-}
+        /* grupo esquerda */
 
-.menu-btn:active{
-    border:2px solid #000;
-    border-right-color:#fff;
-    border-bottom-color:#fff;
-    transform:translate(1px,1px);
-}
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-/* dificuldade */
+        /* botões */
 
-.menu-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:14px;
-    font-weight:bold;
-}
+        .menu-btn {
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            padding: 6px 14px;
+            font-family: Tahoma, sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 110px;
+            text-align: center;
+        }
 
-.menu-right select{
-    background:#fff;
-    border:2px solid #808080;
-    padding:5px 8px;
-    font-family:Tahoma,sans-serif;
-    font-size:14px;
-    min-width:180px;
-}
+        .menu-btn:active {
+            border: 2px solid #000;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            transform: translate(1px, 1px);
+        }
 
-.game-area{
-    background:#00e7ef;
-    padding:18px;
-    min-height:500px;
-}
+        /* dificuldade */
 
-.board{
-    display:grid;
-    gap:12px;
-    justify-content:center;
-}
+        .menu-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
-.card{
-    width:var(--card-size);
-    height:var(--card-size);
-    position:relative;
-    cursor:pointer;
-    user-select:none;
-    -webkit-tap-highlight-color:transparent;
-    perspective:1000px;
-}
+        .menu-right select {
+            background: #fff;
+            border: 2px solid #808080;
+            padding: 5px 8px;
+            font-family: Tahoma, sans-serif;
+            font-size: 14px;
+            min-width: 180px;
+        }
 
-.card:active{
-    transform:scale(.95);
-}
+        .game-area {
+            background: #00e7ef;
+            padding: 18px;
+            min-height: 500px;
+        }
 
-.card-inner{
-    width:100%;
-    height:100%;
-    position:relative;
-    transform-style:preserve-3d;
-    transition:transform .6s cubic-bezier(.4,.2,.2,1);
-}
+        .board {
+            display: grid;
+            gap: 4px;
+            justify-content: center;
+        }
 
-/* animação ao virar */
-.card.open .card-inner{
-    transform:rotateY(180deg);
-}
+        .card {
+            width: var(--card-size);
+            height: var(--card-size);
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            perspective: 1000px;
+        }
 
-/* frente e verso */
-.front,
-.back{
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    backface-visibility:hidden;
-    border-radius:0;
-}
+        .card:active {
+            transform: scale(.95);
+        }
 
-/* ===== FRENTE ===== */
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform .6s cubic-bezier(.4, .2, .2, 1);
+        }
 
-.front{
-    z-index:2;
-    background:#fff200;
-    border:1px solid #7a6d00;
-    box-sizing:border-box;
-	
-}
+        /* animação ao virar */
+        .card.open .card-inner {
+            transform: rotateY(180deg);
+        }
 
-/* lateral esquerda */
-.front::before{
-    content:"";
-    position:absolute;
-    top:5px;
-    left:-8px;
-    width:7px;
-    height:100%;
-    background:#d4be00;
-    border-left:1px solid #7a6d00;
-    border-bottom:1px solid #7a6d00;
-	border-radius:0;
-	border-top:1px solid #7a6d00; /* 👈 fecha a quina */
-}
+        /* frente e verso */
+        .front,
+        .back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            border-radius: 0;
+        }
 
-/* base inferior */
-.front::after{
-    content:"";
-    position:absolute;
-    left:-4px;
-    bottom:-7px;
-    width:100%;
-    height:7px;
-    background:#c2aa00;
-    border-left:1px solid #7a6d00;
-    border-bottom:1px solid #7a6d00;
-	border-radius:0;
-    transform:skewX(-45deg);
-}
+        /* ===== FRENTE ===== */
 
-/* ===== VERSO ===== */
+        /* .front {
+            z-index: 2;
+            background: #fff200;
+            border: 1px solid #7a6d00;
+            box-sizing: border-box;
 
-.back{
-    background:#efefef;
-    border:2px solid #808080;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:34px;
-    transform:rotateY(180deg);
-}
+        } */
 
-.status{
-    height:36px;
-    background:#efefef;
-    border-top:2px solid #808080;
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:24px;
-    padding:0 18px;
-    font-weight:bold;
-}
+        /* lateral esquerda */
+        /* .front::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: -8px;
+            width: 7px;
+            height: 100%;
+            background: #d4be00;
+            border-left: 1px solid #7a6d00;
+            border-bottom: 1px solid #7a6d00;
+            border-radius: 0;
+            border-top: 1px solid #7a6d00;
+        } */
 
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.5);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:9999; /* 👈 ISSO AQUI resolve */
-}
+        /* base inferior */
+        /* .front::after {
+            content: "";
+            position: absolute;
+            left: -4px;
+            bottom: -7px;
+            width: 100%;
+            height: 7px;
+            background: #c2aa00;
+            border-left: 1px solid #7a6d00;
+            border-bottom: 1px solid #7a6d00;
+            border-radius: 0;
+            transform: skewX(-45deg);
+        } */
 
-.modal-box{
-    width:95%;
-    max-width:320px;
-    background:#c0c0c0;
-    border:2px solid #000;
-    box-shadow:4px 4px 0 #000;
-}
+        .ranking-modal {
+            width: 95%;
+            max-width: 600px;
+            min-height: 500px;
+        }
 
-#rankingList{
-    max-height:300px;
-    overflow-y:auto;
-}
 
-.modal-title{
-    background:#0000aa;
-    color:#fff;
-    padding:6px;
-    text-align:center;
-    font-weight:bold;
-}
+        .front {
+            z-index: 2;
+            background-image: url("./bloco2.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background: transparent !important;
+            background-color: transparent !important;
+            background-image: none;
+        }
 
-.modal-content{
-    padding:20px;
-    text-align:center;
-    line-height:2;
-}
+        .front {
+            z-index: 2;
+            overflow: hidden;
+        }
 
-.modal-btn{
-    margin-top:12px;
-    padding:6px 18px;
-    cursor:pointer;
-    background:#c0c0c0;
-    border:2px solid #fff;
-    border-right-color:#000;
-    border-bottom-color:#000;
-    font-weight:bold;
-}
+        .front img {
+            display: block;
+        }
 
-.arcade{
-    background:#000;
-    color:#00ff66;
-    border:3px solid #00ff66;
-    box-shadow:0 0 20px #00ff66;
-    font-family:monospace;
-}
+        .front img {
+            width: 115%;
+            height: 115%;
+            object-fit: contain;
+            transform: translate(-5%, -5%);
+        }
 
-.arcade .modal-title{
-    background:#000;
-    color:#00ff66;
-    border-bottom:2px solid #00ff66;
-    text-shadow:0 0 8px #00ff66;
-}
+        .modal-header {
+            position: relative;
+        }
 
-.arcade .modal-content{
-    background:#000;
-    color:#00ff66;
-}
+        .modal-close {
+            position: absolute;
+            top: 4px;
+            right: 4px;
 
-.card-inner{
-    border-radius:0;
-}
+            width: 18px;
+            height: 18px;
 
-.card{
-    border-radius:0;
-}
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
 
-@media (max-width:480px){
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    .board{
-        gap:8px;
-    }
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+        }
 
-    .back{
-        font-size:26px;
-    }
+        .modal-close:active {
+            border: 2px solid #000;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            transform: translate(1px, 1px);
+        }
 
-    .game-area{
-        padding:10px;
-    }
+        /* ===== VERSO ===== */
 
-    .menu{
-        padding:6px;
-    }
+        .back {
+            background: #efefef;
+            border: 2px solid #808080;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            transform: rotateY(180deg);
+        }
 
-    .menu-btn{
-        min-width:auto;
-        padding:6px 10px;
-        font-size:12px;
-    }
+        .status {
+            height: 36px;
+            background: #efefef;
+            border-top: 2px solid #808080;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 24px;
+            padding: 0 18px;
+            font-weight: bold;
+        }
 
-    .status{
-        font-size:12px;
-        gap:10px;
-    }
-	#rankingList{
-    max-height:220px;
-    overflow-y:auto;
-}
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* 👈 ISSO AQUI resolve */
+        }
 
-.arcade{
-    width:95%;
-}
+        .modal-box {
+            width: 95%;
+            max-width: 320px;
+            background: #c0c0c0;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+        }
 
-.arcade .modal-content{
-    padding:10px;
-    font-size:11px;
-}
-}
-</style>
+        #rankingList {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            background: #0000aa;
+            color: #fff;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .modal-content {
+            padding: 20px;
+            text-align: center;
+            line-height: 2;
+        }
+
+        .modal-btn {
+            margin-top: 12px;
+            padding: 6px 18px;
+            cursor: pointer;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            font-weight: bold;
+        }
+
+        .arcade {
+            background: #000;
+            color: #00ff66;
+            border: 3px solid #00ff66;
+            box-shadow: 0 0 20px #00ff66;
+            font-family: monospace;
+        }
+
+        .arcade .modal-title {
+            background: #000;
+            color: #00ff66;
+            border-bottom: 2px solid #00ff66;
+            text-shadow: 0 0 8px #00ff66;
+        }
+
+        .arcade .modal-content {
+            background: #000;
+            color: #00ff66;
+        }
+
+        .card-inner {
+            border-radius: 0;
+        }
+
+        .card {
+            border-radius: 0;
+        }
+
+        @media (max-width:480px) {
+
+            .board {
+                gap: 8px;
+            }
+
+            .back {
+                font-size: 26px;
+            }
+
+            .game-area {
+                padding: 10px;
+            }
+
+            .menu {
+                padding: 6px;
+            }
+
+            .menu-btn {
+                min-width: auto;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .status {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            #rankingList {
+                max-height: 220px;
+                overflow-y: auto;
+            }
+
+            .arcade {
+                width: 95%;
+            }
+
+            .arcade .modal-content {
+                padding: 10px;
+                font-size: 11px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="window">
-    <div class="titlebar">
-        Memory Blocks Game
-        <div class="win-btn" id="aboutBtn">?</div>
-    </div>
-    <div class="menu">
-    <div class="menu-left">
-        <button class="menu-btn" id="restart">🔄 Recomeçar </button>
-		<button class="menu-btn" id="recordsBtn">🏆 Recordes &nbsp</button>
-		<button class="menu-btn" id="pauseBtn">&nbsp&nbsp&nbsp ⏸️ Pause &nbsp&nbsp&nbsp</button>
-    </div>
-</div>
-
-    <div class="game-area">
-
-        <div class="board" id="board"></div>
-
-    </div>
-
-    <div class="status">
-
-        <span>
-            Tempo:
-            <span id="time">0</span>s
-        </span>
-
-        <span>
-            Movimentos:
-            <span id="moves">0</span>
-        </span>
-
-    </div>
-
-</div>
-
-<!-- MODAL -->
-
-<div class="modal" id="victoryModal">
-    <div class="modal-box">
-        <div class="modal-title">
-            Vitória!
+    <div class="window">
+        <div class="titlebar">
+            Memory Blocks Game
+            <div class="win-btn" id="aboutBtn">?</div>
         </div>
-        <div class="modal-content">
-    <p>🎉 Você venceu!</p>
+        <div class="menu">
+            <div class="menu-left">
+                <button class="menu-btn" id="restart">🔄 Recomeçar </button>
+                <button class="menu-btn" id="recordsBtn">🏆 Recordes &nbsp</button>
+                <button class="menu-btn" id="pauseBtn">&nbsp&nbsp&nbsp ⏸️ Pause &nbsp&nbsp&nbsp</button>
+            </div>
+        </div>
 
-    <p>
-        Tempo:
-        <span id="finalTime"></span>s
-    </p>
+        <div class="game-area">
 
-    <p>
-        Movimentos:
-        <span id="finalMoves"></span>
-    </p>
+            <div class="board" id="board"></div>
 
-    <input
-        type="text"
-        id="winnerName"
-        placeholder="Digite seu nome"
-        maxlength="20"
-        style="
+        </div>
+
+        <div class="status">
+
+            <span>
+                Tempo:
+                <span id="time">0</span>s
+            </span>
+
+            <span>
+                Movimentos:
+                <span id="moves">0</span>
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" id="victoryModal">
+        <div class="modal-box">
+            <div class="modal-title modal-header">
+                Vitória!
+                <div class="modal-close" id="closeVictory">X</div>
+            </div>
+            <div class="modal-content">
+                <p>🎉 Você venceu!</p>
+
+                <p>
+                    Tempo:
+                    <span id="finalTime"></span>s
+                </p>
+
+                <p>
+                    Movimentos:
+                    <span id="finalMoves"></span>
+                </p>
+
+                <input type="text" id="winnerName" placeholder="Digite seu nome" maxlength="20" style="
             width:90%;
             padding:8px;
             margin-top:10px;
             text-align:center;
-        "
-    >
+        ">
 
-    <br>
+                <br>
 
-    <button class="modal-btn" id="saveWinner">
-        Salvar no Ranking
-    </button>
-</div>
-    </div>
-</div>
-
-<div class="modal" id="recordsModal">
-    <div class="modal-box arcade">
-        <div class="modal-title">
-            🕹️ ARCADE RANKING TOP 10
-        </div>
-        <div class="modal-content" id="rankingList">
-        </div>
-        <button class="modal-btn" id="closeRecords">
-            FECHAR
-        </button>
-    </div>
-</div>
-
-<div class="modal" id="aboutModal">
-    <div class="modal-box arcade">
-        <div class="modal-title">
-            ℹ️ ABOUT / SOBRE O JOGO
-        </div>
-        <div class="modal-content">
-            <p><strong>Memory Blocks</strong></p>
-            <p>Jogo estilo retrô inspirado em fliperamas e Windows 95.</p>
-            <p>Feito com HTML, CSS e JavaScript puro.</p>
-            <p>Objetivo: encontrar todos os pares o mais rápido possível.</p>
-            <p style="margin-top:10px;">
-                🎮 Boa sorte!
-            </p>
-        </div>
-        <button class="modal-btn" id="closeAbout">
-            FECHAR
-        </button>
-    </div>
-</div>
-
-<script>
-
-/* ===== EMOJIS ===== */
-
-const emojiPool = [
-
-'🎯','🦋','⭐','🍒','☀️','❤️','🔔','🎵','🍀','⚽',
-'🚗','🐟','🍎','🛸','🎲','🐸','🧩','🎈','👑','🌙',
-'🐱','📀','🎮','🧸','🍋','🌸','🎁','🦄','🍇','🎹',
-'🐼','🐧','🐢','🐙','🍉','🥝','🥥','🍕','🍔','🍟',
-'🚀','🛹','🎤','🎧','📺','💎','🔥','⚡','🌈','🪐'
-
-];
-
-const board = document.getElementById("board");
-const movesEl = document.getElementById("moves");
-const timeEl = document.getElementById("time");
-
-const TOTAL_CARDS = 36;
-
-const modal = document.getElementById("victoryModal");
-
-const finalTime = document.getElementById("finalTime");
-const finalMoves = document.getElementById("finalMoves");
-
-let firstCard = null;
-let secondCard = null;
-let lockBoard = false;
-
-let moves = 0;
-let seconds = 0;
-
-let timerStarted = false;
-let startTime = null;
-let elapsed = 0;
-let timer;
-let paused = false;
-let pausedTime = 0;
-
-let currentIcons = [];
-
-/* ===== EMBARALHAR ===== */
-
-function shuffle(array){
-    for(let i = array.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function updateGrid(){
-
-    let size = 62;
-
-    if(window.innerWidth <= 480){
-        size = 48;
-    }else if(window.innerWidth <= 768){
-        size = 56;
-    }
-
-    document.documentElement
-        .style.setProperty("--card-size", `${size}px`);
-
-    board.style.gridTemplateColumns =
-        `repeat(6, ${size}px)`;
-}
-
-/* ===== DEFINIR DIFICULDADE ===== */
-
-function generateIcons(totalCards){
-    const totalPairs = totalCards / 2;
-    const selected = emojiPool.slice(0, totalPairs);
-    return shuffle([...selected, ...selected]);
-}
-
-/* ===== CRIAR TABULEIRO ===== */
-
-function createBoard(){
-
-    board.innerHTML = "";
-    updateGrid();
-
-    const totalCards = 36;
-
-    currentIcons = generateIcons(totalCards);
-
-    currentIcons.forEach(icon => {
-
-        const card = document.createElement("div");
-
-        card.className = "card";
-
-        card.dataset.icon = icon;
-
-        card.innerHTML = `
-            <div class="card-inner">
-
-                <div class="front"></div>
-
-                <div class="back">${icon}</div>
-
+                <button class="modal-btn" id="saveWinner">
+                    Salvar no Ranking
+                </button>
             </div>
-        `;
+        </div>
+    </div>
+
+    <div class="modal" id="recordsModal">
+        <div class="modal-box arcade ranking-modal">
+            <div class="modal-title modal-header">
+                🕹️ ARCADE RANKING TOP 10
+                <div class="modal-close" id="closeRecordsX">X</div>
+            </div>
+            <div class="modal-content" id="rankingList">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="aboutModal">
+        <div class="modal-box arcade">
+            <div class="modal-title modal-header">
+                ℹ️ ABOUT / SOBRE O JOGO
+                <div class="modal-close" id="closeAboutX">X</div>
+            </div>
+            <div class="modal-content">
+                <p><strong>Memory Blocks</strong></p>
+                <p>Jogo estilo retrô inspirado em fliperamas e Windows 95.</p>
+                <p>Feito com HTML, CSS e JavaScript puro.</p>
+                <p>Objetivo: encontrar todos os pares o mais rápido possível.</p>
+                <p style="margin-top:10px;">
+                    🎮 Boa sorte!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        /* ===== EMOJIS ===== */
 
-        card.addEventListener("click", flipCard);
+        const emojiPool = [
 
-        board.appendChild(card);
-    });
-}
+            '🎯', '🦋', '⭐', '🍒', '☀️', '❤️', '🔔', '🎵', '🍀', '⚽',
+            '🚗', '🐟', '🍎', '🛸', '🎲', '🐸', '🧩', '🎈', '👑', '🌙',
+            '🐱', '📀', '🎮', '🧸', '🍋', '🌸', '🎁', '🦄', '🍇', '🎹',
+            '🐼', '🐧', '🐢', '🐙', '🍉', '🥝', '🥥', '🍕', '🍔', '🍟',
+            '🚀', '🛹', '🎤', '🎧', '📺', '💎', '🔥', '⚡', '🌈', '🪐'
 
-/* ===== TIMER ===== */
-function startTimer(){
+        ];
 
-    startTime = performance.now() - pausedTime;
+        const board = document.getElementById("board");
+        const movesEl = document.getElementById("moves");
+        const timeEl = document.getElementById("time");
 
-    timerStarted = true;
+        const TOTAL_CARDS = 36;
 
-    timer = setInterval(() => {
+        const modal = document.getElementById("victoryModal");
 
-        const now = performance.now();
+        const finalTime = document.getElementById("finalTime");
+        const finalMoves = document.getElementById("finalMoves");
 
-        elapsed = now - startTime;
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
 
-        timeEl.textContent = (elapsed / 1000).toFixed(3);
+        let moves = 0;
+        let seconds = 0;
 
-    }, 50);
-}
+        let timerStarted = false;
+        let startTime = null;
+        let elapsed = 0;
+        let timer;
+        let paused = false;
+        let pausedTime = 0;
 
-/* ===== Salvar recordes (SEM EMPATE) ========== */
+        let currentIcons = [];
 
- function saveRanking(name, time, moves){
+        /* ===== EMBARALHAR ===== */
 
-    const key = "ranking_6x6";
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-    let ranking = JSON.parse(localStorage.getItem(key)) || [];
+        function updateGrid() {
 
-    const entry = {
-        name: name || "Anônimo",
-        time,
-        moves,
-		date: new Date().toLocaleDateString("pt-BR")
-    };
+            let size = 72;
 
-    ranking.push(entry);
+            if (window.innerWidth <= 480) {
+                size = 56;
+            } else if (window.innerWidth <= 768) {
+                size = 64;
+            }
 
-    // ordenar por melhor tempo
-    ranking.sort((a,b) => a.time - b.time);
+            document.documentElement
+                .style.setProperty("--card-size", `${size}px`);
 
-    // manter só TOP 10
-    ranking = ranking.slice(0, 10);
+            board.style.gridTemplateColumns =
+                `repeat(6, ${size}px)`;
+        }
 
-    localStorage.setItem(key, JSON.stringify(ranking));
-}
+        /* ===== DEFINIR DIFICULDADE ===== */
 
-	 /* =========== VIBRAÇÃO =========== */
+        function generateIcons(totalCards) {
+            const totalPairs = totalCards / 2;
+            const selected = emojiPool.slice(0, totalPairs);
+            return shuffle([...selected, ...selected]);
+        }
 
-function vibrar(tempo = 40) {
 
-  // alguns navegadores precisam disso
-  if (!("vibrate" in navigator)) {
-    return;
-  }
 
-  navigator.vibrate(tempo);
-}
+        document.getElementById("closeVictory")
+            .addEventListener("click", () => {
+                document.getElementById("victoryModal").style.display = "none";
+            });
 
-/* ========== Mostrar recordes ========== */
-function showRecords(){
+        document.getElementById("closeRecordsX")
+            .addEventListener("click", () => {
+                document.getElementById("recordsModal").style.display = "none";
+            });
 
-    document.getElementById("recordEasy").textContent =
-        formatRecord(localStorage.getItem("record_36"));
-}
+        document.getElementById("closeAboutX")
+            .addEventListener("click", () => {
+                document.getElementById("aboutModal").style.display = "none";
+            });
 
-function formatRecord(value){
+        /* ===== CRIAR TABULEIRO ===== */
 
-    if(!value) return "--";
+        function createBoard() {
 
-    const record = JSON.parse(value);
+            board.innerHTML = "";
+            updateGrid();
 
-    const time = (record.time / 1000).toFixed(3) + "s";
+            const totalCards = 36;
 
-    return `${record.name} • ${time} • ${record.date}`;
-}
+            currentIcons = generateIcons(totalCards);
 
-/* ===== VIRAR CARTA ===== */
+            currentIcons.forEach(icon => {
 
-function flipCard(){
-	if(paused) return;
+                const card = document.createElement("div");
 
-    if(lockBoard) return;
+                card.className = "card";
 
-    if(this === firstCard) return;
+                card.dataset.icon = icon;
 
-    if(this.classList.contains("matched")) return;
+                card.innerHTML = `
+                <div class="card-inner">
+                    <div class="front">
+                        <img src="./bloco.png" alt="Bloco">
+                    </div>
+                    <div class="back">${icon}</div>
+                </div>
+                `;
 
-    if(!timerStarted){
+                card.addEventListener("click", flipCard);
 
-        startTimer();
-    }
+                board.appendChild(card);
+            });
+        }
 
-    this.classList.add("open");
+        /* ===== TIMER ===== */
+        function startTimer() {
 
-    if(!firstCard){
+            startTime = performance.now() - pausedTime;
 
-        firstCard = this;
+            timerStarted = true;
 
-        return;
-    }
+            timer = setInterval(() => {
 
-    secondCard = this;
+                const now = performance.now();
 
-    moves++;
+                elapsed = now - startTime;
 
-    movesEl.textContent = moves;
+                timeEl.textContent = (elapsed / 1000).toFixed(3);
 
-    lockBoard = true;
+            }, 50);
+        }
 
-    checkMatch();
-}
+        /* ===== Salvar recordes (SEM EMPATE) ========== */
 
-/* ===== MATCH ===== */
+        function saveRanking(name, time, moves) {
 
-function checkMatch(){
+            const key = "ranking_6x6";
 
-    if(firstCard.dataset.icon === secondCard.dataset.icon){
+            let ranking = JSON.parse(localStorage.getItem(key)) || [];
 
-        firstCard.classList.add("matched");
-        secondCard.classList.add("matched");
+            const entry = {
+                name: name || "Anônimo",
+                time,
+                moves,
+                date: new Date().toLocaleDateString("pt-BR")
+            };
 
-        resetTurn();
-		vibrar([80, 40, 120]);
-        checkVictory();
+            ranking.push(entry);
 
-    }else{
+            // ordenar por melhor tempo
+            ranking.sort((a, b) => a.time - b.time);
 
-        setTimeout(() => {
+            // manter só TOP 10
+            ranking = ranking.slice(0, 10);
 
-            firstCard.classList.remove("open");
-            secondCard.classList.remove("open");
+            localStorage.setItem(key, JSON.stringify(ranking));
+        }
 
-            resetTurn();
+        /* =========== VIBRAÇÃO =========== */
 
-        },700);
-    }
-}
+        function vibrar(tempo = 40) {
 
-/* ===== RESET ===== */
+            // alguns navegadores precisam disso
+            if (!("vibrate" in navigator)) {
+                return;
+            }
 
-function resetTurn(){
+            navigator.vibrate(tempo);
+        }
 
-    [firstCard, secondCard, lockBoard] = [null, null, false];
-}
+        /* ========== Mostrar recordes ========== */
+        function showRecords() {
 
-/* ===== VITÓRIA ===== */
+            document.getElementById("recordEasy").textContent =
+                formatRecord(localStorage.getItem("record_36"));
+        }
 
-function checkVictory(){
+        function formatRecord(value) {
 
-    const matched = document.querySelectorAll(".matched");
+            if (!value) return "--";
 
-    if(matched.length === currentIcons.length){
+            const record = JSON.parse(value);
 
-        // vibração primeiro
-        vibrar([200, 100, 200, 100, 300]);
+            const time = (record.time / 1000).toFixed(3) + "s";
 
-        clearInterval(timer);
+            return `${record.name} • ${time} • ${record.date}`;
+        }
 
-        // mostra dados na modal
-        finalTime.textContent = (elapsed / 1000).toFixed(3);
-        finalMoves.textContent = moves;
+        /* ===== VIRAR CARTA ===== */
 
-        // mostra mensagem de vitória primeiro
-        modal.style.display = "flex";
+        function flipCard() {
+            if (paused) return;
 
-        // depois pede o nome
-        setTimeout(() => {
-        }, 500);
-    }
-}
+            if (lockBoard) return;
 
-/* ===== RECOMEÇAR ===== */
+            if (this === firstCard) return;
 
-function restartGame(){
+            if (this.classList.contains("matched")) return;
 
-    elapsed = 0;
-    startTime = null;
-    clearInterval(timer);
-    timerStarted = false;
-    firstCard = null;
-    secondCard = null;
-    lockBoard = false;
-    moves = 0;
-    seconds = 0;
-    movesEl.textContent = 0;
-    timeEl.textContent = 0;
-    createBoard();
-	
-	paused = false;
-pausedTime = 0;
+            if (!timerStarted) {
 
-document.getElementById("pauseBtn").textContent =
-    "⏸️ Pause";
+                startTimer();
+            }
 
-board.style.opacity = "1";
-}
+            this.classList.add("open");
 
-/* ===== EVENTOS ===== */
+            if (!firstCard) {
 
-document
-.getElementById("restart")
-.addEventListener("click", restartGame);
+                firstCard = this;
 
+                return;
+            }
 
-/* ===== INICIAR ===== */
+            secondCard = this;
 
-createBoard();
+            moves++;
 
+            movesEl.textContent = moves;
 
-document.getElementById("aboutBtn")
-.addEventListener("click", () => {
+            lockBoard = true;
 
-    document.getElementById("aboutModal").style.display = "flex";
-});
+            checkMatch();
+        }
 
-document.getElementById("closeAbout")
-.addEventListener("click", () => {
+        /* ===== MATCH ===== */
 
-    document.getElementById("aboutModal").style.display = "none";
-});
+        function checkMatch() {
 
+            if (firstCard.dataset.icon === secondCard.dataset.icon) {
 
-/* ===== Eventos do menu ===== */
-document.getElementById("recordsBtn")
-.addEventListener("click", () => {
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
 
-    showRanking();
+                resetTurn();
+                vibrar([80, 40, 120]);
+                checkVictory();
 
-    document.getElementById("recordsModal").style.display = "flex";
-});
+            } else {
 
-document.getElementById("closeRecords")
-.addEventListener("click", () => {
+                setTimeout(() => {
 
-    document.getElementById("recordsModal").style.display = "none";
-});
+                    firstCard.classList.remove("open");
+                    secondCard.classList.remove("open");
 
-function showRanking(){
+                    resetTurn();
 
-    const key = "ranking_6x6";
+                }, 700);
+            }
+        }
 
-    const ranking = JSON.parse(localStorage.getItem(key)) || [];
+        /* ===== RESET ===== */
 
-    const container = document.getElementById("rankingList");
+        function resetTurn() {
 
-    if(ranking.length === 0){
-        container.innerHTML = "<p>Nenhum recorde ainda</p>";
-        return;
-    }
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
 
-   container.innerHTML = ranking.map((r, i) => `
+        /* ===== VITÓRIA ===== */
+
+        function checkVictory() {
+
+            const matched = document.querySelectorAll(".matched");
+
+            if (matched.length === currentIcons.length) {
+
+                // vibração primeiro
+                vibrar([200, 100, 200, 100, 300]);
+
+                clearInterval(timer);
+
+                // mostra dados na modal
+                finalTime.textContent = (elapsed / 1000).toFixed(3);
+                finalMoves.textContent = moves;
+
+                // mostra mensagem de vitória primeiro
+                modal.style.display = "flex";
+
+                // depois pede o nome
+                setTimeout(() => {
+                }, 500);
+            }
+        }
+
+        /* ===== RECOMEÇAR ===== */
+
+        function restartGame() {
+
+            elapsed = 0;
+            startTime = null;
+            clearInterval(timer);
+            timerStarted = false;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            moves = 0;
+            seconds = 0;
+            movesEl.textContent = 0;
+            timeEl.textContent = 0;
+            createBoard();
+
+            paused = false;
+            pausedTime = 0;
+
+            document.getElementById("pauseBtn").textContent =
+                "⏸️ Pause";
+
+            board.style.opacity = "1";
+        }
+
+        /* ===== EVENTOS ===== */
+
+        document
+            .getElementById("restart")
+            .addEventListener("click", restartGame);
+
+
+        /* ===== INICIAR ===== */
+
+        createBoard();
+
+
+        document.getElementById("aboutBtn")
+            .addEventListener("click", () => {
+
+                document.getElementById("aboutModal").style.display = "flex";
+            });
+
+
+        /* ===== Eventos do menu ===== */
+        document.getElementById("recordsBtn")
+            .addEventListener("click", () => {
+
+                showRanking();
+
+                document.getElementById("recordsModal").style.display = "flex";
+            });
+
+
+        function showRanking() {
+
+            const key = "ranking_6x6";
+
+            const ranking = JSON.parse(localStorage.getItem(key)) || [];
+
+            const container = document.getElementById("rankingList");
+
+            if (ranking.length === 0) {
+                container.innerHTML = "<p>Nenhum recorde ainda</p>";
+                return;
+            }
+
+            container.innerHTML = ranking.map((r, i) => `
 <div style="
     border-bottom:1px solid #000;
     padding:4px;
@@ -868,8 +953,8 @@ function showRanking(){
         display:flex;
         justify-content:space-between;
     ">
-        <span>#${i+1} ${r.name}</span>
-        <span>⏱ ${(r.time/1000).toFixed(3)}s</span>
+        <span>#${i + 1} ${r.name}</span>
+        <span>⏱ ${(r.time / 1000).toFixed(3)}s</span>
     </div>
 
     <div style="
@@ -884,70 +969,70 @@ function showRanking(){
 
 </div>
 `).join("");
-}
+        }
 
-	document.getElementById("saveWinner")
-.addEventListener("click", () => {
+        document.getElementById("saveWinner")
+            .addEventListener("click", () => {
 
-    const nome =
-        document.getElementById("winnerName").value.trim();
+                const nome =
+                    document.getElementById("winnerName").value.trim();
 
-    saveRanking(
-        nome,
-        elapsed,
-        moves
-    );
+                saveRanking(
+                    nome,
+                    elapsed,
+                    moves
+                );
 
-    modal.style.display = "none";
+                modal.style.display = "none";
 
-    restartGame();
-});
-	
-function togglePause(){
+                restartGame();
+            });
 
-    if(paused){
+        function togglePause() {
 
-        paused = false;
+            if (paused) {
 
-        lockBoard = false;
+                paused = false;
 
-        startTimer();
+                lockBoard = false;
 
-        document.getElementById("pauseBtn").textContent =
-            "⏸️ Pause";
+                startTimer();
 
-        board.style.opacity = "1";
+                document.getElementById("pauseBtn").textContent =
+                    "⏸️ Pause";
 
-        return;
-    }
+                board.style.opacity = "1";
 
-    paused = true;
+                return;
+            }
 
-    clearInterval(timer);
+            paused = true;
 
-    pausedTime = elapsed;
+            clearInterval(timer);
 
-    lockBoard = true;
+            pausedTime = elapsed;
 
-    document.getElementById("pauseBtn").textContent =
-        "▶️ Continuar";
+            lockBoard = true;
 
-    board.style.opacity = ".4";
-}
+            document.getElementById("pauseBtn").textContent =
+                "▶️ Continuar";
 
-document.getElementById("pauseBtn")
-.addEventListener("click", togglePause);
+            board.style.opacity = ".4";
+        }
 
-window.addEventListener("resize", updateGrid);
-window.addEventListener("orientationchange", updateGrid);
+        document.getElementById("pauseBtn")
+            .addEventListener("click", togglePause);
 
-updateGrid();
+        window.addEventListener("resize", updateGrid);
+        window.addEventListener("orientationchange", updateGrid);
 
-
-	
+        updateGrid();
 
 
-    if ("serviceWorker" in navigator) {
+
+
+
+        if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
                 navigator.serviceWorker.register("./service-worker.js").then(() => {
                     console.log("PWA instalada!");
@@ -958,7 +1043,8 @@ updateGrid();
             });
         }
 
-</script>
+    </script>
 
 </body>
+
 </html>
